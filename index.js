@@ -1,82 +1,157 @@
-const matematica = true 
-const portugues = false
-const biologia = false
-const quimica = false
-const fisica = true 
+const prompt = require("prompt-sync")()
 
-//// o let será utilizado para que eu possa mudar o dia da semana
-// e testar o código em diferentes dias
+let diaDaSemana
+let diaValido = false
 
-let dia_da_semana = "segunda-feira"
+do {
+  diaDaSemana = prompt("Qual é o dia da semana? ").toLowerCase()
 
-// Condicional para verificar se você estudou a materia ou não
+  if (
+    diaDaSemana === "segunda-feira" ||
+    diaDaSemana === "terça-feira" ||
+    diaDaSemana === "quarta-feira" ||
+    diaDaSemana === "quinta-feira" ||
+    diaDaSemana === "sexta-feira" ||
+    diaDaSemana === "sábado" ||
+    diaDaSemana === "domingo"
+  ) {
+    diaValido = true
+  } else {
+    console.log("Dia inválido! Digite novamente.")
+  }
+} while (!diaValido)
 
-//condicional que verifica o dia da semana e informa quais matérias você deve estudar no respectivo dia
-
-if (dia_da_semana === "segunda-feira") {
-    console.log("Hoje é segunda-feira, você deve estudar matemática e física")
-
-    //nesse condicional, verificamos se você estudou matemática e física, caso tenha estudado, será exibido a mensagem 
-    // "Você estudou matemática" ou "Você estudou física", 
-    // caso não tenha estudado, será exibido a mensagem 
-    // "Você não estudou matemática" ou "Você não estudou física"
-
-            if (matematica&&fisica) {
-        console.log("Você estudou matemática e física")
-    } else {
-            if (matematica) {
-                console.log("Você estudou matemática")
-            } else if (fisica) {
-                console.log("Você estudou física")
-            } else {
-                console.log("Você não estudou matemática e física")
-            }
-    }
-
-//=========================================================================================================
-} else if (dia_da_semana === "terça-feira") {
-    console.log("Hoje é terça-feira, você deve estudar português e biologia")
-
-    //nesse condicional, verificamos se você estudou português e biologia
-
-         if (portugues&&biologia) {
-           console.log("Você estudou português e biologia")
-           } else {
-        console.log("Você não estudou português e biologia")
-       }
-
-///==========================================================================================================
-} else if (dia_da_semana === "quarta-feira") {
-    console.log("Hoje é quarta-feira, você deve estudar química e física")
-
-    // nesse condicional, verificamos se você estudou química e física
-    
-          if (quimica&&fisica) {
-                console.log("Você estudou química e física")
-           } else {
-                  console.log("Você não estudou química e física")
-           }
-
-///=========================================================================================================
-} else if (dia_da_semana === "quinta-feira") {
-    console.log("Hoje é quinta-feira, você deve estudar matemática e biologia")
-    // nesse condicional, verificamos se você estudou matemática e biologia
-    if (matematica&&biologia) {
-        console.log("Você estudou matemática e biologia")
-    } else {
-        console.log("Você não estudou matemática e biologia")
-    }
-
-///=========================================================================================================
-} else if (dia_da_semana === "sexta-feira") {
-    console.log("Hoje é sexta-feira, você deve estudar português e química")
-    // nesse condicional, verificamos se você estudou português e química
-    if (portugues&&quimica) {
-        console.log("Você estudou português e química")
-    } else {
-        console.log("Você não estudou português e química")
-    }
+// OBJETO: matérias previstas para cada dia
+const horario = {
+  "segunda-feira": ["matemática", "física"],
+  "terça-feira": ["português", "biologia"],
+  "quarta-feira": ["química", "física"],
+  "quinta-feira": ["matemática", "biologia"],
+  "sexta-feira": ["português", "química"]
 }
- else {
-    console.log("Hoje é fim de semana, aproveite para descansar!")
- }
+
+// ARRAY: acessando as matérias do dia pelo objeto
+let materiasDoDia = horario[diaDaSemana] || []
+
+// Verifica se é fim de semana
+if (
+  diaDaSemana === "sábado" ||
+  diaDaSemana === "domingo"
+) {
+  console.log("Hoje é fim de semana! Aproveite para descansar.")
+} else {
+
+  // SORT: organiza as matérias em ordem alfabética
+  materiasDoDia.sort()
+
+  console.log(
+    "Matérias previstas para hoje:",
+    materiasDoDia.join(" e ")
+  )
+
+  let quantidade = Number(
+    prompt("Quantas matérias você estudou hoje? ")
+  )
+
+  // WHILE: verifica se a quantidade é válida
+  while (
+    quantidade < 0 ||
+    !Number.isInteger(quantidade)
+  ) {
+    console.log("Digite uma quantidade válida!")
+
+    quantidade = Number(
+      prompt("Quantas matérias você estudou hoje? ")
+    )
+  }
+
+  // ARRAY: armazenará os objetos das matérias estudadas
+  let estudadas = []
+
+  // FOR: pergunta o nome de cada matéria estudada
+  for (let i = 0; i < quantidade; i++) {
+
+    let materia = prompt(
+      "Qual matéria você estudou? "
+    ).toLowerCase()
+
+    // OBJETO: guarda informações de cada matéria
+    let registro = {
+      nome: materia,
+      prevista: materiasDoDia.includes(materia)
+    }
+
+    // PUSH: adiciona o objeto ao array
+    estudadas.push(registro)
+
+    // IF/ELSE: verifica se a matéria estava prevista
+    if (registro.prevista) {
+      console.log(
+        "Você estudou uma matéria prevista para hoje!"
+      )
+    } else {
+      console.log(
+        "Essa matéria não estava prevista para hoje."
+      )
+    }
+  }
+
+  // Verifica o resultado dos estudos
+  let acertos = 0
+
+  for (let i = 0; i < estudadas.length; i++) {
+
+    if (estudadas[i].prevista) {
+      acertos++
+    }
+  }
+
+  // OBJETO: guarda o resumo do dia
+  let resumo = {
+    dia: diaDaSemana,
+    materiasPrevistas: materiasDoDia,
+    materiasEstudadas: estudadas,
+    acertos: acertos
+  }
+
+  // FOR EACH: percorre as matérias estudadas
+  console.log("\n===== MATÉRIAS ESTUDADAS =====")
+
+  resumo.materiasEstudadas.forEach((materia) => {
+    console.log(
+      materia.nome,
+      "- Prevista:",
+      materia.prevista ? "Sim" : "Não"
+    )
+  })
+
+  // RESULTADO FINAL
+  console.log("\n===== RESULTADO DO DIA =====")
+
+  console.log("Dia da semana:", resumo.dia)
+
+  console.log(
+    "Matérias previstas:",
+    resumo.materiasPrevistas.join(" e ")
+  )
+
+  console.log(
+    "Matérias informadas:",
+    resumo.materiasEstudadas.length
+  )
+
+  console.log(
+    "Matérias previstas que você estudou:",
+    resumo.acertos
+  )
+
+  if (resumo.acertos === resumo.materiasPrevistas.length) {
+    console.log(
+      "Parabéns! Você estudou todas as matérias previstas!"
+    )
+  } else {
+    console.log(
+      "Você ainda pode estudar as matérias que faltaram!"
+    )
+  }
+}
